@@ -6,7 +6,7 @@ import { latexToMathJS } from '../utils/latexConverter';
 import { Eye, EyeOff, Trash2 } from 'lucide-react';
 import clsx from 'clsx';
 
-// Add MathQuill styles
+// Add MathQuill styles once globally
 addStyles();
 
 export default function MathQuillEditor({ functionData }) {
@@ -18,10 +18,9 @@ export default function MathQuillEditor({ functionData }) {
   useEffect(() => {
     // Initialize from expression if exists
     if (functionData.expression && !latex) {
-      // For now, just set as plain text - user can edit
       setLatex(functionData.expression);
     }
-  }, []);
+  }, [functionData.expression]);
   
   const handleMathFieldChange = (mathField) => {
     const newLatex = mathField.latex();
@@ -53,6 +52,13 @@ export default function MathQuillEditor({ functionData }) {
     }
   };
   
+  const handleContainerClick = () => {
+    // Focus the MathField when container is clicked
+    if (mathFieldRef.current) {
+      mathFieldRef.current.focus();
+    }
+  };
+  
   const handleOpacityChange = (e) => {
     updateFunction(functionData.id, { opacity: parseFloat(e.target.value) });
   };
@@ -77,13 +83,17 @@ export default function MathQuillEditor({ functionData }) {
         
         {/* MathQuill Editor */}
         <div className="flex-1 relative min-w-0">
-          <div className={clsx(
-            "mathquill-container px-3 py-2 bg-gray-800 border rounded min-h-[40px]",
-            validation.valid 
-              ? "border-gray-700 focus-within:border-primary" 
-              : "border-red-500 focus-within:border-red-400"
-          )}>
+          <div 
+            className={clsx(
+              "mathquill-container px-3 py-2 bg-gray-800 border rounded min-h-[40px] cursor-text",
+              validation.valid 
+                ? "border-gray-700 focus-within:border-primary" 
+                : "border-red-500 focus-within:border-red-400"
+            )}
+            onClick={handleContainerClick}
+          >
             <EditableMathField
+              key={`mathfield-${functionData.id}`}
               latex={latex}
               onChange={handleMathFieldChange}
               mathquillDidMount={(mathField) => {
@@ -100,7 +110,10 @@ export default function MathQuillEditor({ functionData }) {
           {/* Clear button */}
           {latex && (
             <button
-              onClick={handleClear}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClear();
+              }}
               className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-700 rounded z-10"
               title="Clear"
             >
