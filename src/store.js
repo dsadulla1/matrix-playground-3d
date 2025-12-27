@@ -22,7 +22,7 @@ export const useStore = create((set, get) => ({
     { id: 3, expression: '', visible: false, opacity: 0.9, color: '#22c55e' },
   ],
   functionResolution: 50,
-  functionDomain: { xMin: -5, xMax: 5, yMin: -5, yMax: 5 },
+  functionDomain: { xMin: -3, xMax: 3, yMin: -3, yMax: 3 },
   autoPlot: true,
 
   // Matrix state

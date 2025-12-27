@@ -55,22 +55,60 @@ export function generateSurfaceData(exprString, domain, resolution) {
   
   let validPoints = 0;
   let totalPoints = 0;
+  let minZ = Infinity;
+  let maxZ = -Infinity;
   
-  // Generate vertices
+  // First pass: find Z range
+  const zValues = [];
   for (let i = 0; i < resolution; i++) {
+    zValues[i] = [];
     for (let j = 0; j < resolution; j++) {
       const x = xMin + i * xStep;
       const y = yMin + j * yStep;
       const z = evaluateFunction(exprString, x, y);
       
-      totalPoints++;
+      zValues[i][j] = z;
       
       if (z !== null) {
+        minZ = Math.min(minZ, z);
+        maxZ = Math.max(maxZ, z);
+      }
+    }
+  }
+  
+  // Clamp Z range to reasonable bounds
+  const zRange = maxZ - minZ;
+  const maxAllowedRange = 10;
+  
+  let zScale = 1;
+  if (zRange > maxAllowedRange) {
+    zScale = maxAllowedRange / zRange;
+  }
+  
+  // Scale XY to fit in scene (default scene is about -5 to 5)
+  const xRange = xMax - xMin;
+  const yRange = yMax - yMin;
+  const maxXYRange = Math.max(xRange, yRange);
+  const xyScale = maxXYRange > 8 ? 8 / maxXYRange : 1;
+  
+  // Second pass: generate vertices with scaling
+  for (let i = 0; i < resolution; i++) {
+    for (let j = 0; j < resolution; j++) {
+      const x = xMin + i * xStep;
+      const y = yMin + j * yStep;
+      const z = zValues[i][j];
+      
+      totalPoints++;
+      
+      if (z !== null && isFinite(z)) {
         validPoints++;
-        positions.push(x, z, y); // Note: z is vertical in Three.js
+        // Clamp extreme Z values
+        const clampedZ = Math.max(minZ, Math.min(maxZ, z));
+        const scaledZ = (clampedZ - minZ) * zScale - (maxZ - minZ) * zScale / 2;
+        
+        positions.push(x * xyScale, scaledZ, y * xyScale);
       } else {
-        // Push a placeholder that won't be rendered
-        positions.push(x, 0, y);
+        positions.push(x * xyScale, 0, y * xyScale);
       }
     }
   }
@@ -83,33 +121,28 @@ export function generateSurfaceData(exprString, domain, resolution) {
       const c = (i + 1) * resolution + j;
       const d = (i + 1) * resolution + j + 1;
       
-      // Check if all vertices are valid
-      const za = positions[a * 3 + 1];
-      const zb = positions[b * 3 + 1];
-      const zc = positions[c * 3 + 1];
-      const zd = positions[d * 3 + 1];
+      // Check if vertices are valid
+      const za = zValues[i][j];
+      const zb = zValues[i][j + 1];
+      const zc = zValues[i + 1] ? zValues[i + 1][j] : null;
+      const zd = zValues[i + 1] ? zValues[i + 1][j + 1] : null;
       
-      if (za !== 0 || zb !== 0 || zc !== 0) {
+      if (za !== null && zb !== null && zc !== null) {
         indices.push(a, b, c);
       }
-      if (zb !== 0 || zd !== 0 || zc !== 0) {
+      if (zb !== null && zd !== null && zc !== null) {
         indices.push(b, d, c);
       }
     }
   }
   
-  // Generate normals (simple approach - compute per face)
-  for (let i = 0; i < positions.length; i += 3) {
-    normals.push(0, 1, 0); // Placeholder, will be computed properly by Three.js
-  }
-  
   return {
     positions: new Float32Array(positions),
     indices: new Uint16Array(indices),
-    normals: new Float32Array(normals),
     validPoints,
     totalPoints,
     isValid: validPoints > 0,
+    zRange: { min: minZ, max: maxZ },
   };
 }
 
@@ -124,26 +157,24 @@ export function validateExpression(exprString) {
     return { valid: false, error: 'Invalid expression syntax' };
   }
   
-  // Check if expression only uses x and y
+  // Check if expression only uses x and y (plus allowed functions)
   try {
-    const vars = node.filter(node => node.isSymbolNode).map(node => node.name);
-    const uniqueVars = [...new Set(vars)];
-    const allowedVars = ['x', 'y', 'e', 'pi', 'PI', 'E'];
-    const invalidVars = uniqueVars.filter(v => !allowedVars.includes(v));
+    // Test evaluation at a few points
+    const testPoints = [[0, 0], [1, 1], [-1, -1], [0.5, 0.5]];
+    let hasValidPoint = false;
     
-    if (invalidVars.length > 0) {
-      return { 
-        valid: false, 
-        error: `Unknown variables: ${invalidVars.join(', ')}. Use only x and y.` 
-      };
+    for (const [x, y] of testPoints) {
+      const result = evaluateFunction(exprString, x, y);
+      if (result !== null && isFinite(result)) {
+        hasValidPoint = true;
+        break;
+      }
     }
     
-    // Try to evaluate at a test point
-    const testResult = evaluateFunction(exprString, 0, 0);
-    if (testResult === null) {
+    if (!hasValidPoint) {
       return { 
         valid: true, 
-        warning: 'Expression may have undefined points' 
+        warning: 'Expression may have undefined points in the domain' 
       };
     }
     
@@ -155,7 +186,7 @@ export function validateExpression(exprString) {
 
 // Domain presets
 export const domainPresets = {
-  standard: { xMin: -5, xMax: 5, yMin: -5, yMax: 5, label: 'Standard (-5 to 5)' },
+  standard: { xMin: -3, xMax: 3, yMin: -3, yMax: 3, label: 'Standard (-3 to 3)' },
   unit: { xMin: 0, xMax: 1, yMin: 0, yMax: 1, label: 'Unit (0 to 1)' },
   trigonometric: { 
     xMin: -Math.PI, 
@@ -164,6 +195,6 @@ export const domainPresets = {
     yMax: Math.PI, 
     label: 'Trigonometric (-π to π)' 
   },
-  wide: { xMin: -10, xMax: 10, yMin: -10, yMax: 10, label: 'Wide (-10 to 10)' },
-  narrow: { xMin: -2, xMax: 2, yMin: -2, yMax: 2, label: 'Narrow (-2 to 2)' },
+  wide: { xMin: -5, xMax: 5, yMin: -5, yMax: 5, label: 'Wide (-5 to 5)' },
+  narrow: { xMin: -1, xMax: 1, yMin: -1, yMax: 1, label: 'Narrow (-1 to 1)' },
 };

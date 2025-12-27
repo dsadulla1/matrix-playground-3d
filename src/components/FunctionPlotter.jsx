@@ -1,5 +1,5 @@
 import { useStore } from '../store';
-import FunctionInput from './FunctionInput';
+import MathQuillInput from './MathQuillInput';
 import { domainPresets } from '../utils/functionMath';
 import { Settings, Zap, Info } from 'lucide-react';
 import { useState } from 'react';
@@ -43,7 +43,7 @@ export default function FunctionPlotter() {
       {/* Function inputs */}
       <div className="space-y-3">
         {functions.map((func) => (
-          <FunctionInput key={func.id} functionData={func} />
+          <MathQuillInput key={func.id} functionData={func} />
         ))}
       </div>
       
@@ -176,7 +176,9 @@ export default function FunctionPlotter() {
               <li><code className="text-primary">sin(x) * cos(y)</code> - Wave</li>
               <li><code className="text-primary">sqrt(x^2 + y^2)</code> - Cone</li>
               <li><code className="text-primary">x*y</code> - Saddle</li>
+              <li><code className="text-primary">cos(sqrt(x^2 + y^2))</code> - Ripple</li>
             </ul>
+            <p className="pt-1"><strong>Functions:</strong> sin, cos, tan, sqrt, abs, log, exp, etc.</p>
           </div>
         </div>
       </div>
