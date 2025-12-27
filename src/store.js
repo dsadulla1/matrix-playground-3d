@@ -12,6 +12,20 @@ const identity = [
 ];
 
 export const useStore = create((set, get) => ({
+  // Mode state
+  currentMode: 'matrix', // 'matrix' | 'functions' | 'calculus' | 'systems'
+
+  // Function mode state
+  plotMode: '3d', // '2d' | '3d'
+  functions: [
+    { id: 1, expression: 'x^2 + y^2', visible: true, opacity: 0.9, thickness: 0.05, color: '#8b5cf6' },
+    { id: 2, expression: '', visible: false, opacity: 0.9, thickness: 0.05, color: '#3b82f6' },
+    { id: 3, expression: '', visible: false, opacity: 0.9, thickness: 0.05, color: '#22c55e' },
+  ],
+  functionResolution: 50,
+  functionDomain: { xMin: -3, xMax: 3, yMin: -3, yMax: 3 },
+  autoPlot: true,
+
   // Matrix state
   matrix: identity,
   targetMatrix: null,
@@ -33,9 +47,11 @@ export const useStore = create((set, get) => ({
   // UI state
   selectedPreset: 'identity',
   isMobileDrawerOpen: false,
-  activeTab: 'matrix',
+  activeTab: 'presets',
 
   // Actions
+  setMode: (mode) => set({ currentMode: mode }),
+  
   setMatrix: (matrix) => {
     // Validate and clamp values
     const clampedMatrix = matrix.map(row =>
@@ -100,6 +116,27 @@ export const useStore = create((set, get) => ({
   })),
 
   setAnimationSpeed: (speed) => set({ animationSpeed: speed }),
+
+  // Function mode actions
+  setPlotMode: (mode) => set({ plotMode: mode }),
+
+  updateFunction: (id, updates) => set((state) => ({
+    functions: state.functions.map(f => 
+      f.id === id ? { ...f, ...updates } : f
+    )
+  })),
+
+  toggleFunctionVisibility: (id) => set((state) => ({
+    functions: state.functions.map(f =>
+      f.id === id ? { ...f, visible: !f.visible } : f
+    )
+  })),
+
+  setFunctionResolution: (resolution) => set({ functionResolution: resolution }),
+
+  setFunctionDomain: (domain) => set({ functionDomain: domain }),
+
+  toggleAutoPlot: () => set((state) => ({ autoPlot: !state.autoPlot })),
 }));
 
 export { LIMITS };

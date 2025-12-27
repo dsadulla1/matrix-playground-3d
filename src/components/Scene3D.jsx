@@ -4,10 +4,12 @@ import TransformableObject from './TransformableObject';
 import CoordinateAxes from './CoordinateAxes';
 import GridPlanes from './GridPlanes';
 import BasisVectors from './BasisVectors';
+import FunctionSurface from './FunctionSurface';
+import FunctionCurve from './FunctionCurve';
 import { useStore } from '../store';
 
 export default function Scene3D() {
-  const { showAxes, showGrid, showBasisVectors } = useStore();
+  const { showAxes, showGrid, showBasisVectors, currentMode, functions, plotMode } = useStore();
 
   return (
     <div className="w-full h-full">
@@ -44,9 +46,28 @@ export default function Scene3D() {
         {/* Scene elements */}
         {showGrid && <GridPlanes />}
         {showAxes && <CoordinateAxes />}
-        {showBasisVectors && <BasisVectors />}
+        {showBasisVectors && currentMode === 'matrix' && <BasisVectors />}
         
-        <TransformableObject />
+        {/* Matrix mode */}
+        {currentMode === 'matrix' && <TransformableObject />}
+        
+        {/* Function mode - 2D curves */}
+        {currentMode === 'functions' && plotMode === '2d' && (
+          <>
+            {functions.map((func) => (
+              <FunctionCurve key={func.id} functionData={func} />
+            ))}
+          </>
+        )}
+        
+        {/* Function mode - 3D surfaces */}
+        {currentMode === 'functions' && plotMode === '3d' && (
+          <>
+            {functions.map((func) => (
+              <FunctionSurface key={func.id} functionData={func} />
+            ))}
+          </>
+        )}
 
         {/* Ground plane for shadow */}
         <mesh
