@@ -12,7 +12,7 @@ export default function App() {
         <div className="absolute top-4 left-4 pointer-events-none">
           <div className="bg-gray-900/80 backdrop-blur-sm px-4 py-2 rounded-lg border border-gray-800">
             <p className="text-sm text-gray-300">
-              🎨 <span className="font-semibold">Matrix Playground</span>
+              🎨 <span className="font-semibold">Math Playground</span>
             </p>
             <p className="text-xs text-gray-500 mt-1">
               Drag to rotate • Scroll to zoom

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X, Menu, Layers, Eye, Play, Shapes, Info } from 'lucide-react';
 import { useStore } from '../store';
+import ModeSwitcher from './ModeSwitcher';
 import MatrixInput from './MatrixInput';
 import PresetButtons from './PresetButtons';
 import VisualizationToggles from './VisualizationToggles';
@@ -30,12 +31,15 @@ export default function ControlPanel() {
         {/* Header */}
         <div className="p-6 border-b border-gray-800">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            Matrix Playground
+            Math Playground
           </h1>
           <p className="text-sm text-gray-400 mt-1">
-            Explore 3D transformations
+            Explore transformations, functions & calculus
           </p>
         </div>
+
+        {/* Mode Switcher */}
+        <ModeSwitcher />
 
         {/* Always visible matrix input */}
         <div className="p-6 border-b border-gray-800 bg-gray-900/50">
@@ -98,9 +102,12 @@ export default function ControlPanel() {
               {/* Header */}
               <div className="px-4 pb-3 border-b border-gray-800">
                 <h2 className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  Matrix Playground
+                  Math Playground
                 </h2>
               </div>
+
+              {/* Mode Switcher */}
+              <ModeSwitcher />
 
               {/* Always visible matrix input */}
               <div className="p-4 border-b border-gray-800 bg-gray-900/50">

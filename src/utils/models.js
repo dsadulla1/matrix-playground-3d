@@ -1,5 +1,6 @@
 // 3D Model geometry generators
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 export const models = {
   cube: {
@@ -110,7 +111,6 @@ export const models = {
       
       group.add(bodyMesh, spoutMesh, handleMesh, lidMesh, knobMesh);
       
-      const mergedGeometry = new THREE.BufferGeometry();
       const geometries = [];
       
       group.traverse((child) => {
@@ -121,9 +121,7 @@ export const models = {
         }
       });
       
-      return THREE.BufferGeometryUtils ? 
-        THREE.BufferGeometryUtils.mergeGeometries(geometries) :
-        geometries[0];
+      return mergeGeometries(geometries);
     },
   },
   octahedron: {
@@ -226,9 +224,7 @@ export const models = {
         }
       });
       
-      return THREE.BufferGeometryUtils ? 
-        THREE.BufferGeometryUtils.mergeGeometries(geometries) :
-        geometries[0];
+      return mergeGeometries(geometries);
     },
   },
   tetrahedron: {

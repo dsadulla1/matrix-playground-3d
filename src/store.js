@@ -12,6 +12,9 @@ const identity = [
 ];
 
 export const useStore = create((set, get) => ({
+  // Mode state
+  currentMode: 'matrix', // 'matrix' | 'functions' | 'calculus' | 'systems'
+
   // Matrix state
   matrix: identity,
   targetMatrix: null,
@@ -33,9 +36,11 @@ export const useStore = create((set, get) => ({
   // UI state
   selectedPreset: 'identity',
   isMobileDrawerOpen: false,
-  activeTab: 'matrix',
+  activeTab: 'presets',
 
   // Actions
+  setMode: (mode) => set({ currentMode: mode }),
+  
   setMatrix: (matrix) => {
     // Validate and clamp values
     const clampedMatrix = matrix.map(row =>
