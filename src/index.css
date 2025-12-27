@@ -82,3 +82,57 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #6b7280;
 }
+
+/* Animation */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+/* MathQuill Dark Theme Overrides */
+.mathquill-container .mq-editable-field {
+  border: none !important;
+  background: transparent !important;
+  color: #e5e7eb !important;
+  font-size: 16px !important;
+  padding: 0 !important;
+  min-height: 24px !important;
+}
+
+.mathquill-container .mq-editable-field.mq-focused {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.mathquill-container .mq-cursor {
+  border-left: 2px solid #8b5cf6 !important;
+}
+
+.mathquill-container .mq-matrixed {
+  color: #e5e7eb !important;
+}
+
+.mathquill-container .mq-sqrt-stem {
+  border-color: #9ca3af !important;
+}
+
+.mathquill-container .mq-overarrow {
+  border-color: #9ca3af !important;
+}
+
+.mathquill-container .mq-fraction {
+  border-color: #9ca3af !important;
+}
+
+.mathquill-container .mq-paren,
+.mathquill-container .mq-bracket {
+  color: #d1d5db !important;
+}

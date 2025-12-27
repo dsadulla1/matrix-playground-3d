@@ -34,7 +34,7 @@ export default function ControlPanel() {
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden lg:flex flex-col w-96 control-panel border-l h-full overflow-hidden">
+      <div className="hidden lg:flex flex-col w-[32rem] control-panel border-l h-full overflow-hidden">
         {/* Header */}
         <div className="p-6 border-b border-gray-800">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">

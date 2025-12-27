@@ -1,11 +1,14 @@
 import { useStore } from '../store';
-import MathQuillInput from './MathQuillInput';
+import MathQuillEditor from './MathQuillEditor';
 import { domainPresets } from '../utils/functionMath';
 import { Settings, Zap, Info } from 'lucide-react';
 import { useState } from 'react';
+import clsx from 'clsx';
 
 export default function FunctionPlotter() {
   const { 
+    plotMode,
+    setPlotMode,
     functions, 
     functionResolution, 
     setFunctionResolution,
@@ -29,8 +32,39 @@ export default function FunctionPlotter() {
   
   return (
     <div className="space-y-4">
+      {/* Plot Mode Toggle */}
+      <div className="flex items-center gap-2 p-3 bg-gray-900 rounded-lg border border-gray-700">
+        <span className="text-xs text-gray-400 flex-shrink-0">Plot Mode:</span>
+        <div className="flex gap-1 flex-1">
+          <button
+            onClick={() => setPlotMode('2d')}
+            className={clsx(
+              'flex-1 px-3 py-2 text-xs font-medium rounded transition-all',
+              plotMode === '2d'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+            )}
+          >
+            2D Curve
+          </button>
+          <button
+            onClick={() => setPlotMode('3d')}
+            className={clsx(
+              'flex-1 px-3 py-2 text-xs font-medium rounded transition-all',
+              plotMode === '3d'
+                ? 'bg-purple-500 text-white'
+                : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+            )}
+          >
+            3D Surface
+          </button>
+        </div>
+      </div>
+      
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-gray-300">Functions</h3>
+        <h3 className="text-sm font-semibold text-gray-300">
+          {plotMode === '2d' ? 'Functions y = f(x)' : 'Functions z = f(x,y)'}
+        </h3>
         <button
           onClick={() => setShowSettings(!showSettings)}
           className="p-2 rounded hover:bg-gray-800 transition-colors"
@@ -43,7 +77,7 @@ export default function FunctionPlotter() {
       {/* Function inputs */}
       <div className="space-y-3">
         {functions.map((func) => (
-          <MathQuillInput key={func.id} functionData={func} />
+          <MathQuillEditor key={func.id} functionData={func} />
         ))}
       </div>
       
