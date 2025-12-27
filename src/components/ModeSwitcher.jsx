@@ -19,7 +19,7 @@ const modes = [
     shortLabel: 'Functions',
     description: 'Plot and explore mathematical functions',
     color: '#3b82f6',
-    available: false, // Coming soon
+    available: true,
   },
   { 
     id: 'calculus', 

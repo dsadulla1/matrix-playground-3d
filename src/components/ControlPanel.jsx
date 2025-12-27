@@ -8,9 +8,10 @@ import VisualizationToggles from './VisualizationToggles';
 import AnimationControls from './AnimationControls';
 import ModelSelector from './ModelSelector';
 import MatrixInfo from './MatrixInfo';
+import FunctionPlotter from './FunctionPlotter';
 import clsx from 'clsx';
 
-const tabs = [
+const matrixTabs = [
   { id: 'presets', icon: Layers, label: 'Presets', component: PresetButtons },
   { id: 'shapes', icon: Shapes, label: 'Shapes', component: ModelSelector },
   { id: 'viz', icon: Eye, label: 'View', component: VisualizationToggles },
@@ -18,11 +19,17 @@ const tabs = [
   { id: 'info', icon: Info, label: 'Info', component: MatrixInfo },
 ];
 
+const functionTabs = [
+  { id: 'viz', icon: Eye, label: 'View', component: VisualizationToggles },
+];
+
 export default function ControlPanel() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { activeTab, setActiveTab } = useStore();
-
-  const ActiveComponent = tabs.find(t => t.id === activeTab)?.component || PresetButtons;
+  const { activeTab, setActiveTab, currentMode } = useStore();
+  
+  // Select tabs based on current mode
+  const tabs = currentMode === 'matrix' ? matrixTabs : functionTabs;
+  const ActiveComponent = tabs.find(t => t.id === activeTab)?.component || tabs[0]?.component;
 
   return (
     <>
@@ -41,34 +48,47 @@ export default function ControlPanel() {
         {/* Mode Switcher */}
         <ModeSwitcher />
 
-        {/* Always visible matrix input */}
-        <div className="p-6 border-b border-gray-800 bg-gray-900/50">
-          <MatrixInput />
-        </div>
+        {/* Matrix mode: show matrix input */}
+        {currentMode === 'matrix' && (
+          <div className="p-6 border-b border-gray-800 bg-gray-900/50">
+            <MatrixInput />
+          </div>
+        )}
+        
+        {/* Function mode: show function plotter */}
+        {currentMode === 'functions' && (
+          <div className="p-6 border-b border-gray-800 bg-gray-900/50">
+            <FunctionPlotter />
+          </div>
+        )}
 
-        {/* Tabs */}
-        <div className="flex border-b border-gray-800 overflow-x-auto">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={clsx(
-                'flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors border-b-2',
-                activeTab === tab.id
-                  ? 'border-primary text-primary bg-primary/5'
-                  : 'border-transparent text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'
-              )}
-            >
-              <tab.icon className="w-4 h-4" />
-              <span className="hidden xl:inline">{tab.label}</span>
-            </button>
-          ))}
-        </div>
+        {/* Tabs (only show if we have tabs for this mode) */}
+        {tabs.length > 0 && (
+          <>
+            <div className="flex border-b border-gray-800 overflow-x-auto">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={clsx(
+                    'flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors border-b-2',
+                    activeTab === tab.id
+                      ? 'border-primary text-primary bg-primary/5'
+                      : 'border-transparent text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'
+                  )}
+                >
+                  <tab.icon className="w-4 h-4" />
+                  <span className="hidden xl:inline">{tab.label}</span>
+                </button>
+              ))}
+            </div>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
-          <ActiveComponent />
-        </div>
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {ActiveComponent && <ActiveComponent />}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Mobile: Bottom drawer */}
@@ -109,34 +129,47 @@ export default function ControlPanel() {
               {/* Mode Switcher */}
               <ModeSwitcher />
 
-              {/* Always visible matrix input */}
-              <div className="p-4 border-b border-gray-800 bg-gray-900/50">
-                <MatrixInput />
-              </div>
+              {/* Matrix mode: show matrix input */}
+              {currentMode === 'matrix' && (
+                <div className="p-4 border-b border-gray-800 bg-gray-900/50">
+                  <MatrixInput />
+                </div>
+              )}
+              
+              {/* Function mode: show function plotter */}
+              {currentMode === 'functions' && (
+                <div className="p-4 border-b border-gray-800 bg-gray-900/50">
+                  <FunctionPlotter />
+                </div>
+              )}
 
-              {/* Tabs */}
-              <div className="flex overflow-x-auto border-b border-gray-800">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={clsx(
-                      'flex flex-col items-center gap-1 px-4 py-3 text-xs font-medium transition-colors border-b-2 whitespace-nowrap',
-                      activeTab === tab.id
-                        ? 'border-primary text-primary bg-primary/5'
-                        : 'border-transparent text-gray-400'
-                    )}
-                  >
-                    <tab.icon className="w-5 h-5" />
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
+              {/* Tabs (only show if we have tabs for this mode) */}
+              {tabs.length > 0 && (
+                <>
+                  <div className="flex overflow-x-auto border-b border-gray-800">
+                    {tabs.map((tab) => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={clsx(
+                          'flex flex-col items-center gap-1 px-4 py-3 text-xs font-medium transition-colors border-b-2 whitespace-nowrap',
+                          activeTab === tab.id
+                            ? 'border-primary text-primary bg-primary/5'
+                            : 'border-transparent text-gray-400'
+                        )}
+                      >
+                        <tab.icon className="w-5 h-5" />
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
 
-              {/* Content */}
-              <div className="overflow-y-auto p-4 max-h-[calc(85vh-220px)]">
-                <ActiveComponent />
-              </div>
+                  {/* Content */}
+                  <div className="overflow-y-auto p-4 max-h-[calc(85vh-300px)]">
+                    {ActiveComponent && <ActiveComponent />}
+                  </div>
+                </>
+              )}
             </div>
           </>
         )}
