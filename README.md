@@ -2,6 +2,8 @@
 
 An interactive, educational 3D visualization tool for exploring linear transformations using matrices. Built with React Three Fiber.
 
+Created by Claude: https://claude.ai/chat/453a6ff0-348f-4ceb-8efe-1711f8e853e8
+
 ## ✨ Features
 
 ### 🎯 Core Functionality

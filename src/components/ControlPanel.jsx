@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Menu, Grid3x3, Layers, Eye, Play, Shapes, Info } from 'lucide-react';
+import { X, Menu, Layers, Eye, Play, Shapes, Info } from 'lucide-react';
 import { useStore } from '../store';
 import MatrixInput from './MatrixInput';
 import PresetButtons from './PresetButtons';
@@ -10,7 +10,6 @@ import MatrixInfo from './MatrixInfo';
 import clsx from 'clsx';
 
 const tabs = [
-  { id: 'matrix', icon: Grid3x3, label: 'Matrix', component: MatrixInput },
   { id: 'presets', icon: Layers, label: 'Presets', component: PresetButtons },
   { id: 'shapes', icon: Shapes, label: 'Shapes', component: ModelSelector },
   { id: 'viz', icon: Eye, label: 'View', component: VisualizationToggles },
@@ -22,7 +21,7 @@ export default function ControlPanel() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { activeTab, setActiveTab } = useStore();
 
-  const ActiveComponent = tabs.find(t => t.id === activeTab)?.component || MatrixInput;
+  const ActiveComponent = tabs.find(t => t.id === activeTab)?.component || PresetButtons;
 
   return (
     <>
@@ -36,6 +35,11 @@ export default function ControlPanel() {
           <p className="text-sm text-gray-400 mt-1">
             Explore 3D transformations
           </p>
+        </div>
+
+        {/* Always visible matrix input */}
+        <div className="p-6 border-b border-gray-800 bg-gray-900/50">
+          <MatrixInput />
         </div>
 
         {/* Tabs */}
@@ -98,6 +102,11 @@ export default function ControlPanel() {
                 </h2>
               </div>
 
+              {/* Always visible matrix input */}
+              <div className="p-4 border-b border-gray-800 bg-gray-900/50">
+                <MatrixInput />
+              </div>
+
               {/* Tabs */}
               <div className="flex overflow-x-auto border-b border-gray-800">
                 {tabs.map((tab) => (
@@ -118,7 +127,7 @@ export default function ControlPanel() {
               </div>
 
               {/* Content */}
-              <div className="overflow-y-auto p-4 max-h-[calc(85vh-140px)]">
+              <div className="overflow-y-auto p-4 max-h-[calc(85vh-220px)]">
                 <ActiveComponent />
               </div>
             </div>
