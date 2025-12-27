@@ -43,7 +43,7 @@ export default function FunctionSurface({ functionData }) {
   }
   
   return (
-    <mesh ref={meshRef} geometry={geometry}>
+    <mesh key={`surface-${functionData.id}-${functionData.expression}`} ref={meshRef} geometry={geometry}>
       <meshStandardMaterial
         color={functionData.color}
         side={THREE.DoubleSide}

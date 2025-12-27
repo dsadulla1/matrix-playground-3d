@@ -54,7 +54,7 @@ export default function FunctionCurve({ functionData }) {
   }
   
   return (
-    <mesh geometry={geometry}>
+    <mesh key={`curve-${functionData.id}-${functionData.expression}`} geometry={geometry}>
       <meshStandardMaterial
         color={functionData.color}
         metalness={0.3}

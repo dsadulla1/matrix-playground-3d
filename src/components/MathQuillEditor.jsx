@@ -170,7 +170,7 @@ export default function MathQuillEditor({ functionData }) {
           )}
           
           {/* Thickness slider for 2D */}
-          {plotMode === '2d' && (
+          {/* {plotMode === '2d' && (
             <div className="flex items-center gap-2">
               <span className="text-xs text-gray-500 flex-shrink-0 w-16">Thickness:</span>
               <input
@@ -191,7 +191,7 @@ export default function MathQuillEditor({ functionData }) {
                 {Math.round((functionData.thickness || 0.05) * 100)}
               </span>
             </div>
-          )}
+          )} */}
         </div>
       )}
       

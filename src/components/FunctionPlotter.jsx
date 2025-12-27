@@ -203,16 +203,32 @@ export default function FunctionPlotter() {
         <div className="flex items-start gap-2">
           <Info className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
           <div className="text-xs text-gray-400 space-y-1">
-            <p><strong>Syntax:</strong> Use x and y as variables</p>
-            <p><strong>Examples:</strong></p>
+            <p><strong>Equation Format:</strong></p>
             <ul className="list-disc list-inside pl-2 space-y-0.5">
-              <li><code className="text-primary">x^2 + y^2</code> - Paraboloid</li>
-              <li><code className="text-primary">sin(x) * cos(y)</code> - Wave</li>
-              <li><code className="text-primary">sqrt(x^2 + y^2)</code> - Cone</li>
-              <li><code className="text-primary">x*y</code> - Saddle</li>
-              <li><code className="text-primary">cos(sqrt(x^2 + y^2))</code> - Ripple</li>
+              <li><strong>2D Mode:</strong> Enter <code className="text-primary">f(x)</code> - just type the expression
+                <br/><span className="text-gray-500 ml-5">Example: <code>sin(x)</code> means y = sin(x)</span>
+              </li>
+              <li><strong>3D Mode:</strong> Enter <code className="text-primary">f(x,y)</code> - expression in x and y
+                <br/><span className="text-gray-500 ml-5">Example: <code>x^2 + y^2</code> means z = x² + y²</span>
+              </li>
             </ul>
-            <p className="pt-1"><strong>Functions:</strong> sin, cos, tan, sqrt, abs, log, exp, etc.</p>
+            
+            <p className="pt-2"><strong>Examples:</strong></p>
+            <ul className="list-disc list-inside pl-2 space-y-0.5">
+              <li><code className="text-primary">x^2 + y^2</code> - Paraboloid (3D)</li>
+              <li><code className="text-primary">sin(x) * cos(y)</code> - Wave (3D)</li>
+              <li><code className="text-primary">sqrt(x^2 + y^2)</code> - Cone (3D)</li>
+              <li><code className="text-primary">sin(x)</code> - Sine curve (2D)</li>
+              <li><code className="text-primary">x^2</code> - Parabola (2D)</li>
+              <li><code className="text-primary">cos(sqrt(x^2 + y^2))</code> - Ripple (3D)</li>
+            </ul>
+            
+            <p className="pt-2"><strong>Available functions:</strong></p>
+            <p className="pl-2">sin, cos, tan, sqrt, abs, log, ln, exp, asin, acos, atan, sinh, cosh, tanh</p>
+            
+            <p className="pt-2"><strong>Constants:</strong> pi (π), e</p>
+            
+            <p className="pt-2"><strong>Operators:</strong> +, -, *, /, ^ (power)</p>
           </div>
         </div>
       </div>
